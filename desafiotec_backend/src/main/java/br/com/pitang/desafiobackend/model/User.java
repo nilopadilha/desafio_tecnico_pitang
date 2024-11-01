@@ -3,21 +3,14 @@ package br.com.pitang.desafiobackend.model;
 
 import br.com.pitang.desafiobackend.enumerats.UserRole;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 /**
- *  @author nilopadilha email.: nilopadilha@gmail
+ * @author nilopadilha email.: nilopadilha@gmail
  * classe criada para repesentar em banco e armazenar/persistir os dados de usuarios
  */
 @Getter
@@ -26,7 +19,8 @@ import java.util.List;
 @Table(name = "tb_users")
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements UserDetails {
+@Builder
+public class User{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -44,48 +38,19 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role;
     private LocalDate createAt;
-    private LocalDate lastLogin;
-
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Car> cars;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.role == UserRole.ADMIN)
-            return List.of(new SimpleGrantedAuthority("ADMIN"),
-                    new SimpleGrantedAuthority("GESTOR"),
-                    new SimpleGrantedAuthority("USER"));
-        else return List.of(new SimpleGrantedAuthority("USER"));
-    }
+    public User(String firstname, String lastName, String email, Date birthday, String login, String password, String phone, UserRole role) {
+        this.firstName = firstname;
+        this.lastName = lastName;
+        this.email = email;
+        this.birthday = birthday;
+        this.login = login;
+        this.password = password;
+        this.phone = phone;
+        this.role = role;
 
-    @Override
-    public String getPassword() {
-        return "";
-    }
-
-    @Override
-    public String getUsername() {
-        return login;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
     }
 }

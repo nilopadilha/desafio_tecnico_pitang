@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
-
 /**
  *  @author nilopadilha email.: nilopadilha@gmail
  * classe criada para repesentar em banco de dados e armazenar/persistir os dados de carro
@@ -19,7 +17,7 @@ import java.io.Serializable;
 @Table(name = "tb_cars")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Car implements Serializable {
+public class Car{
 
 
     @Id
