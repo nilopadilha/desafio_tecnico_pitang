@@ -4,7 +4,9 @@ package br.com.pitang.desafiobackend.model;
 import br.com.pitang.desafiobackend.enumerats.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -20,13 +22,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class User{
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
 
     @Column(name = "id_user")
     private Long id;
+
     private String firstName;
     private String lastName;
     private String email;
@@ -37,9 +40,13 @@ public class User{
     @Column(name = "perfil", nullable = false)
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
+    @Basic(optional = false)
+    @CreationTimestamp
+    @Column(name = "created_at")
     private LocalDate createAt;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Car> cars;
 
     public User(String firstname, String lastName, String email, Date birthday, String login, String password, String phone, UserRole role) {
