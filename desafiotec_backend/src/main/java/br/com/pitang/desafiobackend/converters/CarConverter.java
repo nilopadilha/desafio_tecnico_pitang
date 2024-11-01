@@ -1,0 +1,49 @@
+package br.com.pitang.desafiobackend.converters;
+
+import br.com.pitang.desafiobackend.dto.CarDTO;
+import br.com.pitang.desafiobackend.model.Car;
+import br.com.pitang.desafiobackend.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+
+@Component
+@RequiredArgsConstructor
+public class CarConverter {
+
+    private final UserRepository userRepository;
+
+    public Car toEntity(CarDTO dto) {
+        Car e = new Car();
+        e.setId(dto.getId());
+        e.setCar_year(dto.getCar_year());
+        e.setColor(dto.getColor());
+        e.setModel(dto.getModel());
+        e.setLicensePlate(dto.getLicensePlate());
+        e.setQuant_usuario(Objects.isNull(dto.getQuant_usuario())?0: dto.getQuant_usuario());
+        return  e;
+    }
+
+    public CarDTO toDTO(Car car) {
+        return CarDTO.builder()
+                .id(car.getId())
+                .color(car.getColor())
+                .car_year(car.getCar_year())
+                .licensePlate(car.getLicensePlate())
+                .model(car.getModel())
+                .quant_usuario(car.getQuant_usuario())
+                .build();
+    }
+
+    public List<CarDTO> toDTO(List<Car> list) {
+        return list.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    public List<Car> toEntity(List<CarDTO> list) {
+        return list.stream().map(this::toEntity).collect(Collectors.toList());
+    }
+}
