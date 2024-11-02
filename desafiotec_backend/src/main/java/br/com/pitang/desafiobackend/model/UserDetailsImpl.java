@@ -1,7 +1,6 @@
-package br.com.pitang.desafiobackend.services;
+package br.com.pitang.desafiobackend.model;
 
 import br.com.pitang.desafiobackend.enumerats.UserRole;
-import br.com.pitang.desafiobackend.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
