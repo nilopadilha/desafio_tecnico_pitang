@@ -33,7 +33,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public List<CarDTO> findAll(String token) throws UserCarNotFoundException {
         UserDTO user = this.userService.findAuthenticateUserByToken(token);
-        return this.converter.toDTO(this.repository.findAllByUserIdOrderByQtdUsoDesc(user.getId()));
+        return this.converter.toDTO(this.repository.findAllByUserIdOrderByquantUsuarioDesc(user.getId()));
 
     }
 
@@ -50,7 +50,7 @@ public class CarServiceImpl implements CarService {
                 .orElseThrow(() -> new UserCarNotFoundException("Entity not found: " + id));
 
         // Increment quantidade de usuario por 1
-        car.setQuant_usuario(car.getQuant_usuario() + 1);
+        car.setQuantUsuario(car.getQuantUsuario() + 1);
         this.repository.save(car);
 
         return this.converter.toDTO(car);

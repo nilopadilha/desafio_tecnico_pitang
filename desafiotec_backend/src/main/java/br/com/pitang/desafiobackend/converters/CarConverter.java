@@ -24,7 +24,7 @@ public class CarConverter {
         e.setColor(dto.getColor());
         e.setModel(dto.getModel());
         e.setLicensePlate(dto.getLicensePlate());
-        e.setQuant_usuario(Objects.isNull(dto.getQuant_usuario())?0: dto.getQuant_usuario());
+        e.setQuantUsuario(Objects.isNull(dto.getQuantUsuario())?0: dto.getQuantUsuario());
         return  e;
     }
 
@@ -35,7 +35,7 @@ public class CarConverter {
                 .car_year(car.getCar_year())
                 .licensePlate(car.getLicensePlate())
                 .model(car.getModel())
-                .quant_usuario(car.getQuant_usuario())
+                .quantUsuario(car.getQuantUsuario())
                 .build();
     }
 

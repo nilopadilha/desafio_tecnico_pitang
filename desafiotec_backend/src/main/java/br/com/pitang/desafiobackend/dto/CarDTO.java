@@ -16,5 +16,5 @@ public class CarDTO {
     private String licensePlate;
     private String model;
     private String color;
-    private Integer quant_usuario;
+    private Integer quantUsuario;
 }
