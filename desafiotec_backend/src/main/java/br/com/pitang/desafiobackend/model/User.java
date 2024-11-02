@@ -29,7 +29,6 @@ public class User implements Serializable {
 
     @Column(name = "id_user")
     private Long id;
-
     private String firstName;
     private String lastName;
     private String email;

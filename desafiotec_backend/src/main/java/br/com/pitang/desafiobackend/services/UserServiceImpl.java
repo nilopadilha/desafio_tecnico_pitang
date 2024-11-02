@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService {
         if (this.repository.existsByEmail(dto.getEmail())) {
             throw new UserCarNotFoundException("Email already exists");
         }
-        if (this.repository.existsByUsername(dto.getLogin())) {
+        if (this.repository.existsByLogin(dto.getLogin())) {
             throw new UserCarNotFoundException("Login already exists");
         }
     }
@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
         if (this.repository.existsByEmailAndIdNot(dto.getEmail(), dto.getId())) {
             throw new UserCarNotFoundException("Email already exists");
         }
-        if (this.repository.existsByUsernameAndIdNot(dto.getLogin(), dto.getId())) {
+        if (this.repository.existsByLoginAndIdNot(dto.getLogin(), dto.getId())) {
             throw new UserCarNotFoundException("Login already exists");
         }
     }
@@ -137,8 +137,8 @@ public class UserServiceImpl implements UserService {
 
         try {
             TokenService jwt = new TokenService();
-            String username = jwt.validateToken(token);
-            User user = this.repository.findByUsername(username).orElse(new User());
+            String login = jwt.validateToken(token);
+            User user = this.repository.findByFirstName(login).orElse(new User());
             return this.converter.toDTO(user);
         } catch (TokenExpiredException e) {
             throw new UserCarNotFoundException("Unauthorized - invalid session");
