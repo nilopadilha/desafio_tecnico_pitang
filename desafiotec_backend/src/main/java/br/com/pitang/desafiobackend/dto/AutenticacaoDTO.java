@@ -1,11 +1,12 @@
 package br.com.pitang.desafiobackend.dto;
 
-public record AutenticacaoDTO(String login, String senha) {
+public record AutenticacaoDTO(String login, String password) {
 
     @Override
     public String toString() {
-        return "autenticacaoDTO[" +
-                "login=" + login + ", " +
-                "senha=" + senha + ']';
+        return "AutenticacaoDTO{" +
+                "login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

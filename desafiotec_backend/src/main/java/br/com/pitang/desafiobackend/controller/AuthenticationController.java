@@ -13,25 +13,24 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
 @Validated
 public class AuthenticationController {
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private  AuthenticationManager manager;
 
     @Autowired
     private UserRepository usuarioRepository;
 
+
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid AutenticacaoDTO usuarioLog) throws UserCarNotFoundException {
-        var usernamePassword = new UsernamePasswordAuthenticationToken(usuarioLog.login(), usuarioLog.senha());
-        var auth = this.authenticationManager.authenticate(usernamePassword);
+        var usernamePassword = new UsernamePasswordAuthenticationToken(usuarioLog.login(), usuarioLog.password());
+        var auth = this.manager.authenticate(usernamePassword);
 
         return ResponseEntity.status(HttpStatus.OK).body("logado com sucesso.");
     }

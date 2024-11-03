@@ -22,10 +22,10 @@ import java.util.List;
 public class UserDTO {
     private Long id;
     @NotNull
-    @Column(name = "primeironome", nullable = false)
+    @Column(name = "nome", nullable = false)
     private String firstName;
     @NotNull
-    @Column(name = "ultimonome", nullable = false)
+    @Column(name = "sobrenome", nullable = false)
     private String lastName;
     @NotNull
     @Email

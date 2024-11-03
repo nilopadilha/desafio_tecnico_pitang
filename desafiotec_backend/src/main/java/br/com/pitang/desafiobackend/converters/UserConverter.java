@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 
 
 /*
-* converte DTO para entidadade e vice versa
-* */
+ * converte DTO para entidadade e vice versa
+ * */
 
 @Component
 @RequiredArgsConstructor
@@ -23,7 +23,7 @@ public class UserConverter {
 
 
     public User toEntity(UserDTO dto) {
-        if(Objects.isNull(dto)){
+        if (Objects.isNull(dto)) {
             return null;
         }
         User e = new User();
@@ -31,12 +31,12 @@ public class UserConverter {
         e.setFirstName(dto.getFirstName());
         e.setLastName(dto.getLastName());
         e.setLogin(dto.getLogin());
-        e.setPassword(Objects.nonNull(dto.getPassword())?new BCryptPasswordEncoder().encode(dto.getPassword()): null);
+        e.setPassword(Objects.nonNull(dto.getPassword()) ? new BCryptPasswordEncoder().encode(dto.getPassword()) : null);
         e.setBirthday(dto.getBirthday());
         e.setEmail(dto.getEmail());
         e.setPhone(dto.getPhone());
         e.setCreateAt(dto.getCreateAt());
-        if(Objects.nonNull(dto.getCars())) {
+        if (Objects.nonNull(dto.getCars())) {
             e.setCars(carConverter.toEntity(dto.getCars()));
         }
 
