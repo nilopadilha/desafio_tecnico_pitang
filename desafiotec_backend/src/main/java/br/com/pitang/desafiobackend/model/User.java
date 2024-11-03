@@ -3,11 +3,17 @@ package br.com.pitang.desafiobackend.model;
 
 import br.com.pitang.desafiobackend.enumerats.UserRole;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +27,7 @@ import java.util.List;
 @Table(name = "tb_users")
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements Serializable {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -65,4 +71,44 @@ public class User implements Serializable {
         this.phone = phone;
         this.role = role;
     }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.role == UserRole.ADMIN)
+            return List.of(new SimpleGrantedAuthority("ADMIN"),
+                    new SimpleGrantedAuthority("GESTOR"),
+                    new SimpleGrantedAuthority("USER"));
+        else return List.of(new SimpleGrantedAuthority("USER"));
+    }
+
+    @Override
+    public String getPassword() {
+        return "password";
+    } // Retorna a credencial do usuário que criamos anteriormente
+
+    @Override
+    public String getUsername() {
+        return "login";
+    } // Retorna o nome de usuário do usuário que criamos anteriormente
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
 }
