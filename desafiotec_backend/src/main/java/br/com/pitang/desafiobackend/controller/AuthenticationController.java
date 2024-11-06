@@ -2,7 +2,7 @@ package br.com.pitang.desafiobackend.controller;
 
 import br.com.pitang.desafiobackend.dto.AutenticacaoDTO;
 import br.com.pitang.desafiobackend.dto.RegistrarUsuarioDTO;
-import br.com.pitang.desafiobackend.exceptions.UserCarNotFoundException;
+import br.com.pitang.desafiobackend.exceptions.ResourceNotFoundException;
 import br.com.pitang.desafiobackend.model.User;
 import br.com.pitang.desafiobackend.repositories.UserRepository;
 import jakarta.validation.Valid;
@@ -28,7 +28,7 @@ public class AuthenticationController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid AutenticacaoDTO usuarioLog) throws UserCarNotFoundException {
+    public ResponseEntity<?> login(@RequestBody @Valid AutenticacaoDTO usuarioLog) throws ResourceNotFoundException {
         var usernamePassword = new UsernamePasswordAuthenticationToken(usuarioLog.login(), usuarioLog.password());
         var auth = this.manager.authenticate(usernamePassword);
 
@@ -36,7 +36,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity<?> registrar(@RequestBody @Valid RegistrarUsuarioDTO data) throws UserCarNotFoundException {
+    public ResponseEntity<?> registrar(@RequestBody @Valid RegistrarUsuarioDTO data) throws ResourceNotFoundException {
         if(this.usuarioRepository.findByLogin(data.login()) != null) return  ResponseEntity.badRequest().build();
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());

@@ -12,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
@@ -27,7 +28,8 @@ import java.util.List;
 @Table(name = "tb_users")
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements UserDetails {
+
+public class User implements UserDetails, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -73,15 +75,6 @@ public class User implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.role == UserRole.ADMIN)
-            return List.of(new SimpleGrantedAuthority("ADMIN"),
-                    new SimpleGrantedAuthority("GESTOR"),
-                    new SimpleGrantedAuthority("USER"));
-        else return List.of(new SimpleGrantedAuthority("USER"));
-    }
-
-    @Override
     public String getPassword() {
         return "password";
     } // Retorna a credencial do usuário que criamos anteriormente
@@ -109,6 +102,15 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.role == UserRole.ADMIN)
+            return List.of(new SimpleGrantedAuthority("ADMIN"),
+                    new SimpleGrantedAuthority("GESTOR"),
+                    new SimpleGrantedAuthority("USER"));
+        else return List.of(new SimpleGrantedAuthority("USER"));
     }
 
 }

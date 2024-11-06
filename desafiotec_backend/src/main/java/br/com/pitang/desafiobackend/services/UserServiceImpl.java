@@ -4,7 +4,7 @@ package br.com.pitang.desafiobackend.services;
 import br.com.pitang.desafiobackend.config.TokenService;
 import br.com.pitang.desafiobackend.converters.UserConverter;
 import br.com.pitang.desafiobackend.dto.UserDTO;
-import br.com.pitang.desafiobackend.exceptions.UserCarNotFoundException;
+import br.com.pitang.desafiobackend.exceptions.ResourceNotFoundException;
 import br.com.pitang.desafiobackend.model.Car;
 import br.com.pitang.desafiobackend.model.User;
 import br.com.pitang.desafiobackend.repositories.UserRepository;
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public UserDTO update(UserDTO dto) throws UserCarNotFoundException {
+    public UserDTO update(UserDTO dto) throws ResourceNotFoundException {
         this.validateUpdateFields(dto);
         return this.save(dto);
     }
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public UserDTO create(UserDTO dto) throws UserCarNotFoundException {
+    public UserDTO create(UserDTO dto) throws ResourceNotFoundException {
         this.validateFields(dto);
         dto.setCreateAt(LocalDate.now());
         return this.save(dto);
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
      *
      * @param dto objeto com os dados do novo usuário
      */
-    public UserDTO save(UserDTO dto) throws UserCarNotFoundException {
+    public UserDTO save(UserDTO dto) throws ResourceNotFoundException {
         User userEntity = this.converter.toEntity(dto);
         if (Objects.nonNull(userEntity.getId()) && (Objects.isNull(userEntity.getPassword()))) {
             userEntity.setPassword(this.repository.findById(dto.getId())
@@ -99,12 +99,12 @@ public class UserServiceImpl implements UserService {
      *
      * @param dto para verificação dos campos
      */
-    private void validateFields(UserDTO dto) throws UserCarNotFoundException {
+    private void validateFields(UserDTO dto) throws ResourceNotFoundException {
         if (this.repository.existsByEmail(dto.getEmail())) {
-            throw new UserCarNotFoundException("Email already exists");
+            throw new ResourceNotFoundException("Email already exists");
         }
         if (this.repository.existsByLogin(dto.getLogin())) {
-            throw new UserCarNotFoundException("Login already exists");
+            throw new ResourceNotFoundException("Login already exists");
         }
     }
 
@@ -113,12 +113,12 @@ public class UserServiceImpl implements UserService {
      *
      * @param dto para verificação dos campos
      */
-    private void validateUpdateFields(UserDTO dto) throws UserCarNotFoundException {
+    private void validateUpdateFields(UserDTO dto) throws ResourceNotFoundException {
         if (this.repository.existsByEmailAndIdNot(dto.getEmail(), dto.getId())) {
-            throw new UserCarNotFoundException("Email already exists");
+            throw new ResourceNotFoundException("Email already exists");
         }
         if (this.repository.existsByLoginAndIdNot(dto.getLogin(), dto.getId())) {
-            throw new UserCarNotFoundException("Login already exists");
+            throw new ResourceNotFoundException("Login already exists");
         }
     }
 
@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
 
         String token = authorization.replace("Bearer ", Strings.EMPTY);
         if (token.isBlank()) {
-            throw new UserCarNotFoundException("Unauthorized");
+            throw new ResourceNotFoundException("Unauthorized");
         }
 
         try {
@@ -141,9 +141,9 @@ public class UserServiceImpl implements UserService {
             User user = this.repository.findByFirstName(login).orElse(new User());
             return this.converter.toDTO(user);
         } catch (TokenExpiredException e) {
-            throw new UserCarNotFoundException("Unauthorized - invalid session");
+            throw new ResourceNotFoundException("Unauthorized - invalid session");
         } catch (Exception e) {
-            throw new UserCarNotFoundException("Error: " + e.getMessage());
+            throw new ResourceNotFoundException("Error: " + e.getMessage());
         }
     }
 
@@ -168,12 +168,12 @@ public class UserServiceImpl implements UserService {
      *
      * @param dto para verificação dos campos
      */
-    private void validateFieldsIsNull(User dto) throws UserCarNotFoundException {
+    private void validateFieldsIsNull(User dto) throws ResourceNotFoundException {
         if (Objects.isNull(dto.getBirthday()) || dto.getFirstName().isBlank()
                 || dto.getLastName().isBlank() || dto.getEmail().isBlank()
                 || dto.getLogin().isBlank() || dto.getPassword().isBlank()
                 || dto.getPhone().isBlank()) {
-            throw new UserCarNotFoundException("Missing fields");
+            throw new ResourceNotFoundException("Missing fields");
         }
     }
 
