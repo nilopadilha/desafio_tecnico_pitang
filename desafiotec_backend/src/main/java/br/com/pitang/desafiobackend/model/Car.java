@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 /**
  *  @author nilopadilha email.: nilopadilha@gmail
  * classe criada para repesentar em banco de dados e armazenar/persistir os dados de carro
@@ -17,7 +19,7 @@ import lombok.Setter;
 @Table(name = "tb_cars")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Car{
+public class Car implements Serializable {
 
 
     @Id
@@ -25,9 +27,13 @@ public class Car{
 
     @Column(name = "id_car")
     private Long id;
+    @Column(name = "anocarro", nullable = false)
     private int car_year;
+    @Column(name = "placacarro", nullable = false)
     private String licensePlate;
+    @Column(name = "modelo", nullable = false)
     private String model;
+    @Column(name = "cor", nullable = false)
     private String color;
 
     @Column(name = "quant_usuario", columnDefinition = "integer default 0")

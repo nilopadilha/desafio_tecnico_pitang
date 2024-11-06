@@ -4,7 +4,7 @@ import br.com.pitang.desafiobackend.converters.CarConverter;
 import br.com.pitang.desafiobackend.converters.UserConverter;
 import br.com.pitang.desafiobackend.dto.CarDTO;
 import br.com.pitang.desafiobackend.dto.UserDTO;
-import br.com.pitang.desafiobackend.exceptions.UserCarNotFoundException;
+import br.com.pitang.desafiobackend.exceptions.ResourceNotFoundException;
 import br.com.pitang.desafiobackend.model.Car;
 import br.com.pitang.desafiobackend.model.User;
 import br.com.pitang.desafiobackend.repositories.CarRepository;
@@ -31,7 +31,7 @@ public class CarServiceImpl implements CarService {
 
 
     @Override
-    public List<CarDTO> findAll(String token) throws UserCarNotFoundException {
+    public List<CarDTO> findAll(String token) throws ResourceNotFoundException {
         UserDTO user = this.userService.findAuthenticateUserByToken(token);
         return this.converter.toDTO(this.repository.findAllByUserIdOrderByquantUsuarioDesc(user.getId()));
 
@@ -44,10 +44,10 @@ public class CarServiceImpl implements CarService {
      * @param token para verificação do usuário logado
      */
     @Override
-    public CarDTO findById(String token, Long id) throws UserCarNotFoundException {
+    public CarDTO findById(String token, Long id) throws ResourceNotFoundException {
         UserDTO user = this.userService.findAuthenticateUserByToken(token);
         Car car = this.repository.findByIdAndUserId(id, user.getId())
-                .orElseThrow(() -> new UserCarNotFoundException("Entity not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Entity not found: " + id));
 
         // Increment quantidade de usuario por 1
         car.setQuantUsuario(car.getQuantUsuario() + 1);
@@ -65,9 +65,9 @@ public class CarServiceImpl implements CarService {
      */
     @Override
     @Transactional
-    public CarDTO update(String token, CarDTO dto) throws UserCarNotFoundException {
+    public CarDTO update(String token, CarDTO dto) throws ResourceNotFoundException {
         if (this.repository.existsByLicensePlateAndIdNot(dto.getLicensePlate(), dto.getId())) {
-            throw new UserCarNotFoundException("License plate already exists");
+            throw new ResourceNotFoundException("License plate already exists");
         }
         return this.create(token, dto);
 
@@ -80,7 +80,7 @@ public class CarServiceImpl implements CarService {
      * @param token para verificação do usuário logado
      */
     @Override
-    public CarDTO create(String token, CarDTO dto) throws UserCarNotFoundException {
+    public CarDTO create(String token, CarDTO dto) throws ResourceNotFoundException {
         validationFields(dto);
         Car car = this.converter.toEntity(dto);
         User user = this.userConverter.toEntity(this.userService.findAuthenticateUserByToken(token));
@@ -99,7 +99,7 @@ public class CarServiceImpl implements CarService {
     private void validationFields(CarDTO dto) {
         if (Objects.isNull(dto.getCar_year()) || dto.getColor().isBlank()
                 || dto.getLicensePlate().isBlank() || dto.getModel().isBlank()) {
-            throw new UserCarNotFoundException("Missing fields");
+            throw new ResourceNotFoundException("Missing fields");
         }
 
     }
@@ -112,7 +112,7 @@ public class CarServiceImpl implements CarService {
      */
     @Override
     @Transactional
-    public void delete(String token, Long id) throws UserCarNotFoundException {
+    public void delete(String token, Long id) throws ResourceNotFoundException {
         UserDTO userDTO = this.userService.findAuthenticateUserByToken(token);
         this.repository.findByIdAndUserId(id, userDTO.getId())
                 .ifPresent(car -> {
