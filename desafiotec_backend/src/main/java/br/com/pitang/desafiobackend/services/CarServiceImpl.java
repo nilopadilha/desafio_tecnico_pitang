@@ -97,7 +97,7 @@ public class CarServiceImpl implements CarService {
      */
 
     private void validationFields(CarDTO dto) {
-        if (Objects.isNull(dto.getCar_year()) || dto.getColor().isBlank()
+        if (Objects.isNull(dto.getCar_Year()) || dto.getColor().isBlank()
                 || dto.getLicensePlate().isBlank() || dto.getModel().isBlank()) {
             throw new ResourceNotFoundException("Missing fields");
         }
