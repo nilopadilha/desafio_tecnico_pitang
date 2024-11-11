@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,7 +43,7 @@ public class User implements UserDetails, Serializable {
     @Column(name = "email", nullable = false)
     private String email;
     @Column(name = "aniversario", nullable = false)
-    private Date birthday;
+    private LocalDate birthday;
     @Column(name = "login", nullable = false)
     private String login;
     @Column(name = "senha", nullable = false)
@@ -63,7 +62,7 @@ public class User implements UserDetails, Serializable {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Car> cars;
 
-    public User(String firstName, String lastName, String email, Date birthday, String login, String password, String phone, UserRole role) {
+    public User(String firstName, String lastName, String email, LocalDate birthday, String login, String password, String phone, UserRole role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

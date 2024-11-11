@@ -8,10 +8,10 @@ import br.com.pitang.desafiobackend.exceptions.ResourceNotFoundException;
 import br.com.pitang.desafiobackend.model.Car;
 import br.com.pitang.desafiobackend.model.User;
 import br.com.pitang.desafiobackend.repositories.UserRepository;
-import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.util.Strings;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,6 +24,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
     private final UserConverter converter;
+
+    private TokenService tokenService;
 
     /**
      * Recupera um usuário por id
@@ -68,8 +70,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO save(UserDTO dto) throws ResourceNotFoundException {
         User userEntity = this.converter.toEntity(dto);
         if (Objects.nonNull(userEntity.getId()) && (Objects.isNull(userEntity.getPassword()))) {
-            userEntity.setPassword(this.repository.findById(dto.getId())
-                    .orElse(new User()).getPassword());
+            userEntity.setPassword(this.repository.findById(dto.getId()).orElse(new User()).getPassword());
 
         }
         this.validateFieldsIsNull(userEntity);
@@ -129,21 +130,26 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDTO findAuthenticateUserByToken(String authorization) {
-
-        String token = authorization.replace("Bearer ", Strings.EMPTY);
-        if (token.isBlank()) {
-            throw new ResourceNotFoundException("Unauthorized");
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            throw new ResourceNotFoundException("Token inválido ou ausente");
         }
 
+        String token = authorization.substring(7); // Remove "Bearer "
+
         try {
-            TokenService jwt = new TokenService();
-            String login = jwt.validateToken(token);
-            User user = this.repository.findByFirstName(login).orElse(new User());
-            return this.converter.toDTO(user);
-        } catch (TokenExpiredException e) {
-            throw new ResourceNotFoundException("Unauthorized - invalid session");
+            String login = tokenService.validateToken(token);
+            if (login.isEmpty()) {
+                throw new ResourceNotFoundException("Token inválido");
+            }
+
+            User user = repository.findByfirstName(login)
+                    .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+
+            return converter.toDTO(user);
+        } catch (JWTVerificationException e) {
+            throw new ResourceNotFoundException("Sessão inválida: " + e.getMessage());
         } catch (Exception e) {
-            throw new ResourceNotFoundException("Error: " + e.getMessage());
+            throw new ResourceNotFoundException("Erro ao processar o token: " + e.getMessage());
         }
     }
 
@@ -156,11 +162,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteCar(Car car) {
-        this.repository.findById(car.getUser().getId())
-                .ifPresent(user -> {
-                    user.getCars().remove(car);
-                    this.repository.save(user);
-                });
+        this.repository.findById(car.getUser().getId()).ifPresent(user -> {
+            user.getCars().remove(car);
+            this.repository.save(user);
+        });
     }
 
     /**
@@ -169,12 +174,14 @@ public class UserServiceImpl implements UserService {
      * @param dto para verificação dos campos
      */
     private void validateFieldsIsNull(User dto) throws ResourceNotFoundException {
-        if (Objects.isNull(dto.getBirthday()) || dto.getFirstName().isBlank()
-                || dto.getLastName().isBlank() || dto.getEmail().isBlank()
-                || dto.getLogin().isBlank() || dto.getPassword().isBlank()
-                || dto.getPhone().isBlank()) {
+        if (Objects.isNull(dto.getBirthday()) || dto.getFirstName().isBlank() || dto.getLastName().isBlank() || dto.getEmail().isBlank() || dto.getLogin().isBlank() || dto.getPassword().isBlank() || dto.getPhone().isBlank()) {
             throw new ResourceNotFoundException("Missing fields");
         }
+    }
+
+
+    public UserDetails loadUserByUsername(String login) throws ResourceNotFoundException {
+        return repository.findByLogin(login);
     }
 
 }
