@@ -30,16 +30,16 @@ public class UserConverter {
     public User toEntity(UserDTO dto) {
         return Optional.ofNullable(dto).map(d -> {
             User user = new User();
-            user.setId(d.getId());
+            //user.setId(d.getId());
             user.setFirstName(d.getFirstName());
             user.setLastName(d.getLastName());
             user.setLogin(d.getLogin());
-            user.setPassword(d.getPassword()); // using helper method
+            user.setPassword(d.getPassword());
             user.setBirthday(d.getBirthday());
             user.setEmail(d.getEmail());
             user.setPhone(d.getPhone());
-            user.setCreateAt(d.getCreateAt());
-            user.setCars(Optional.ofNullable(d.getCars()).map(carConverter::toEntity).orElse(null));
+           // user.setCreateAt(d.getCreateAt());
+           // user.setCars(Optional.ofNullable(d.getCars()).map(carConverter::toEntity).orElse(null));
             return user;
         }).orElse(null);
     }
@@ -55,15 +55,15 @@ public class UserConverter {
             return null;
         }
         return UserDTO.builder()
-                .id(user.getId())
+                //.id(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .login(user.getLogin())
                 .email(user.getEmail())
                 .birthday(user.getBirthday())
                 .phone(user.getPhone())
-                .cars(carConverter.toDTO(user.getCars()))
-                .createAt(user.getCreateAt())
+               // .cars(carConverter.toDTO(user.getCars()))
+              //  .createAt(user.getCreateAt())
                 .build();
     }
 

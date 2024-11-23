@@ -1,30 +1,26 @@
 package br.com.pitang.desafiobackend.services;
 
 import br.com.pitang.desafiobackend.dto.UserDTO;
-import br.com.pitang.desafiobackend.model.Car;
-import org.springframework.stereotype.Service;
+import br.com.pitang.desafiobackend.dto.UserResgistroResponseDTO;
+import br.com.pitang.desafiobackend.dto.UserResponseDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-/**
- * A classe userservice cria os métodos para usuários no sistema.
- */
+public interface UserService {
 
-@Service
-public interface UserService  {
+    Page<UserResponseDTO> findAllPaged(Pageable pageable);
 
-    UserDTO findById(Long id);
+    UserResgistroResponseDTO create(UserDTO userRequestDTO);
 
-    UserDTO update(UserDTO dto);
+    UserResponseDTO findById(Long id);
 
-    UserDTO create(UserDTO dto);
+    void delete(Long id);
 
-    void deleteById(Long id);
+    UserResponseDTO update(Long id, UserDTO userRequestDTO);
 
-    List<UserDTO> findAll();
+    UserResponseDTO findAuthenticateUser(String token);
 
-    UserDTO findAuthenticateUserByToken(String authorization);
+    void validateAtributtes(UserDTO userRequestDTO);
 
-    void deleteCar(Car car);
-
-
+    void deleteAll();
 }

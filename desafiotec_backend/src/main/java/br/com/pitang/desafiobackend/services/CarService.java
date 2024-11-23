@@ -1,23 +1,25 @@
 package br.com.pitang.desafiobackend.services;
 
-import br.com.pitang.desafiobackend.dto.CarDTO;
 
-import java.util.List;
-/**
- * A classe carservice cria os métodos para carros no sistema.
- */
+import br.com.pitang.desafiobackend.dto.CarDTO;
+import br.com.pitang.desafiobackend.dto.CarResponseDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface CarService {
+    Page<CarResponseDTO> findAllPaged(String token, Pageable pageable);
 
-    List<CarDTO> findAll(String token);
-
-    CarDTO findById(String token, Long id);
-
-    CarDTO update(String token, CarDTO dto);
-
-    CarDTO create(String token, CarDTO dto);
+    CarResponseDTO findById(String token, Long id);
 
     void delete(String token, Long id);
 
+    CarResponseDTO update(String token, Long id, CarDTO carDtoRequest);
 
+    CarResponseDTO create(String token, CarDTO carDtoRequest);
+
+    boolean existsByLicensePlate(String licensePlate);
+
+    void validateAtributtes(CarDTO carDtoRequest);
+
+    void deleteAll();
 }

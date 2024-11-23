@@ -1,7 +1,6 @@
 package br.com.pitang.desafiobackend.controller;
 
 import br.com.pitang.desafiobackend.dto.CarDTO;
-import br.com.pitang.desafiobackend.services.CarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

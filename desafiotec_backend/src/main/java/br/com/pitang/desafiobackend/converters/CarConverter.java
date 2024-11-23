@@ -19,7 +19,7 @@ public class CarConverter {
 
     public Car toEntity(CarDTO dto) {
         Car e = new Car();
-        e.setId(dto.getId());
+       // e.setId(dto.getId());
         e.setCar_year(dto.getCar_Year());
         e.setColor(dto.getColor());
         e.setModel(dto.getModel());
@@ -30,7 +30,7 @@ public class CarConverter {
 
     public CarDTO toDTO(Car car) {
         return CarDTO.builder()
-                .id(car.getId())
+                //.id(car.getId())
                 .color(car.getColor())
                 .car_Year(car.getCar_year())
                 .licensePlate(car.getLicensePlate())
