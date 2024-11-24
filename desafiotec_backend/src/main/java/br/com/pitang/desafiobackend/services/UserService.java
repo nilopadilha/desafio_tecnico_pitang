@@ -1,26 +1,68 @@
 package br.com.pitang.desafiobackend.services;
 
-import br.com.pitang.desafiobackend.dto.UserDTO;
-import br.com.pitang.desafiobackend.dto.UserResgistroResponseDTO;
 import br.com.pitang.desafiobackend.dto.UserResponseDTO;
+import br.com.pitang.desafiobackend.exceptions.ResourceNotFoundException;
+import br.com.pitang.desafiobackend.model.User;
+import br.com.pitang.desafiobackend.repositories.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-public interface UserService {
+public class UserService {
 
-    Page<UserResponseDTO> findAllPaged(Pageable pageable);
+    @Autowired
+    private UserRepository repository;
 
-    UserResgistroResponseDTO create(UserDTO userRequestDTO);
+    @Transactional(readOnly = true)
+    public UserResponseDTO findById(Long id) {
+        return new UserResponseDTO(repository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Recurso não encontrado")));
+    }
 
-    UserResponseDTO findById(Long id);
+    @Transactional(readOnly = true)
+    public Page<UserResponseDTO> findAll(Pageable pageable) {
+        Page<User> result = repository.findAll(pageable);
+        return result.map(UserResponseDTO::new);
+    }
 
-    void delete(Long id);
+    @Transactional
+    public UserResponseDTO insert(UserResponseDTO dto) {
+        User entity = new User();
+        passDtoToEntity(dto, entity);
+        return new UserResponseDTO(repository.save(entity));
+    }
 
-    UserResponseDTO update(Long id, UserDTO userRequestDTO);
+    @Transactional
+    public UserResponseDTO update(Long id, UserResponseDTO dto) {
+        try {
+            User entity = repository.getReferenceById(id);
+            passDtoToEntity(dto, entity);
+            return new UserResponseDTO(repository.save(entity));
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException("Recurso não encontrado");
+        }
+    }
 
-    UserResponseDTO findAuthenticateUser(String token);
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void delete(Long id) {
+        if (!repository.existsById(id)) {
+            throw new ResourceNotFoundException("Recurso não encontrado");
+        } else {
+            repository.deleteById(id);
+        }
+    }
 
-    void validateAtributtes(UserDTO userRequestDTO);
-
-    void deleteAll();
+    private void passDtoToEntity(UserResponseDTO dto, User entity) {
+        entity.setFirstName(dto.getFirstName());
+        entity.setLastName(dto.getLastName());
+        entity.setEmail(dto.getEmail());
+        entity.setBirthday(dto.getBirthday());
+        entity.setLogin(dto.getLogin());
+        entity.setPassword(dto.getPassword());
+        entity.setPhone(dto.getPhone());
+        entity.setRole(dto.getRole());
+    }
 }
