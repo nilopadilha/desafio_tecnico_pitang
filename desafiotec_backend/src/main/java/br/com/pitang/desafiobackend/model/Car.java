@@ -36,9 +36,6 @@ public class Car implements Serializable {
     @Column(name = "cor", nullable = false)
     private String color;
 
-    @Column(name = "quant_usuario", columnDefinition = "integer default 0")
-    private Integer quantUsuario = 0;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user")
     private User user;

@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -24,8 +23,7 @@ public class CarConverter {
         e.setColor(dto.getColor());
         e.setModel(dto.getModel());
         e.setLicensePlate(dto.getLicensePlate());
-        e.setQuantUsuario(Objects.isNull(dto.getQuantUsuario())?0: dto.getQuantUsuario());
-        return  e;
+     return  e;
     }
 
     public CarResponseDTO toDTO(Car car) {
@@ -35,7 +33,6 @@ public class CarConverter {
                 .car_Year(car.getCar_year())
                 .licensePlate(car.getLicensePlate())
                 .model(car.getModel())
-                .quantUsuario(car.getQuantUsuario())
                 .build();
     }
 

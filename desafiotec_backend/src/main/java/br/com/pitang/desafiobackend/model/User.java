@@ -62,7 +62,7 @@ public class User implements UserDetails, Serializable {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Car> cars;
 
-    public User(String firstName, String lastName, String email, LocalDate birthday, String login, String password, String phone, UserRole role) {
+    public User(String firstName, String lastName, String email, LocalDate birthday, String login, String password, String phone, UserRole role, List<Car> cars) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -71,6 +71,7 @@ public class User implements UserDetails, Serializable {
         this.password = password;
         this.phone = phone;
         this.role = role;
+        this.cars = cars;
     }
 
     @Override

@@ -9,9 +9,11 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+@Service
 public class CarService {
     @Autowired
     private CarRepository repository;
@@ -29,7 +31,7 @@ public class CarService {
     }
 
     @Transactional
-    public CarResponseDTO insert(CarResponseDTO dto) {
+    public CarResponseDTO insert(Long userid, CarResponseDTO dto) {
         Car entity = new Car();
         passDtoToEntity(dto, entity);
         return new CarResponseDTO(repository.save(entity));
@@ -60,6 +62,7 @@ public class CarService {
         entity.setModel(dto.getModel());
         entity.setLicensePlate(dto.getLicensePlate());
         entity.setColor(dto.getColor());
-        entity.setQuantUsuario(dto.getQuantUsuario());
+        entity.setUser(dto.getUser());
+
     }
 }
